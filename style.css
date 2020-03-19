@@ -78,3 +78,6 @@ body{
     width: 30px;
     height: 30px;
 }
+.none{
+    display: none;
+}
