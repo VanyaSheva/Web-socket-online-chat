@@ -1,20 +1,27 @@
+import defPhoto from './defaultPhoto.js';
+
 const input = document.querySelector(".input");
 const form = document.querySelector("form");
 const chatContainer = document.querySelector(".chat-container");
 const async = document.querySelector('[data-name="async"]');
 const user = document.querySelector(".user-name");
-const upload = document.querySelector('input[type="file"]');
+const upload = document.querySelector('.inputfile');
+const submit = document.querySelector('.submit');
+const label = document.querySelector('label');
+const box = document.querySelector('.box');
+const regForm = document.querySelector('.register-form');
 let avatar;
 var uluru = {};
 let ws = new WebSocket("wss://venify.herokuapp.com/chat");
 var map;
+const googleMap = document.querySelector('#map');
+
 
 if (!localStorage.getItem("settings")) {
-  user.classList.remove("none");
-  upload.classList.remove("none");
+  removeDisplayNone([user]);
+  addDisplayNone([googleMap,chatContainer, form, upload]);
 } else {
-  user.classList.add("none");
-  upload.classList.add("none");
+  regForm.remove();
 }
 
 navigator.geolocation.getCurrentPosition(position => {
@@ -33,24 +40,47 @@ setTimeout(
 );
 
 ws.onmessage = ({ data }) => {
-  createElements(JSON.parse(data));
-  console.log(JSON.parse(data));
-  const cords = JSON.parse(data).cords;
-  marker = new google.maps.Marker({ position: cords, map: map });
+  const message = JSON.parse(data);
+
+  if (message.image === undefined) {
+    message.image = defPhoto;
+  } 
+  createElements(message);
+  console.log(message);
+  const cords = message.cords;
+  let marker = new google.maps.Marker({ position: cords, map: map });
 };
 
 form.addEventListener("submit", handleFormSubmit);
+input.addEventListener("keypress", handleEnterPressSubmit);
 upload.addEventListener("change", handleImageLoad);
+regForm.addEventListener('submit', handleRegFormSubmit);
+
+
+
+function handleRegFormSubmit(e){
+e.preventDefault();
+removeDisplayNone([googleMap,chatContainer, form]);
+localStorage.setItem(
+  "settings",
+  JSON.stringify({
+    name: user.value,
+    image: avatar
+}));
+regForm.remove();
+}
+
+function handleEnterPressSubmit(e){
+if(e.which === 13 && !e.shiftKey){
+    return handleFormSubmit(e);
+ }
+}
 
 function handleFormSubmit(e) {
   e.preventDefault();
-  if (input.value === "") {
-    alert("You can`t send empty message");
+  if(input.value === ''){
     return;
   }
-  user.classList.add("none");
-  upload.classList.add("none");
-
   if (localStorage.getItem("settings")) {
     const { name, image } = JSON.parse(localStorage.getItem("settings"));
     user.value = name;
@@ -64,13 +94,6 @@ function handleFormSubmit(e) {
       image: avatar
     })
   );
-  localStorage.setItem(
-    "settings",
-    JSON.stringify({
-      name: user.value,
-      image: avatar
-    })
-  );
   input.value = "";
 }
 
@@ -81,11 +104,11 @@ function createElements(data) {
   const time = document.createElement("p");
   const photo = document.createElement("img");
   photo.src = data.image;
+  handleImageLoad();
   createTime(time);
   contentAddind(userName, chatMessage, data);
   classAdding(messageContainer, chatMessage, userName, time, photo);
   addElements(chatMessage, time, messageContainer, userName, photo);
-  handleImageLoad();
 }
 
 function createTime(time) {
@@ -112,6 +135,7 @@ function contentAddind(userName, chatMessage, data) {
 function addElements(chatMessage, time, messageContainer, userName, img) {
   messageContainer.append(userName, chatMessage, time, img);
   chatContainer.append(messageContainer);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function pad(value) {
@@ -121,9 +145,23 @@ function pad(value) {
 function handleImageLoad() {
   const FR = new FileReader();
   if (upload.files && upload.files[0]) {
+    console.log(upload.files);
     FR.addEventListener("load", function(e) {
       avatar = e.target.result;
+      console.log(e.target.result);
+      console.log(avatar);
     });
     FR.readAsDataURL(upload.files[0]);
   }
+}
+
+function addDisplayNone(args){
+Array.from(args).forEach(arg=>{
+arg.classList.add('none');
+})}
+
+function removeDisplayNone(args){
+Array.from(args).forEach(arg=>{
+ arg.classList.remove('none');
+  })
 }

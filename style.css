@@ -15,7 +15,7 @@ body{
     height: 392px;
     border: 4px solid black;
     padding-left: 15px;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 .message-container{
     display: flex;
@@ -36,9 +36,10 @@ body{
 }
 .user-name{
     background: #f1f1f1;
-    margin-bottom: 5px;
+    margin: 0 auto 40px;
     padding: 5px;
     border: none;
+    width: 40%;
 }
 .time{
     margin-right: 10px;
@@ -49,7 +50,7 @@ body{
     background: #f1f1f1;
     resize: none;
     height: 60px;
-    overflow: scroll;
+    overflow-y: scroll;
     margin-bottom: 5px;
     padding: 5px;
   }
@@ -60,8 +61,11 @@ body{
     border: none;
     cursor: pointer;
     width: 100%;
-    margin-bottom:10px;
+    margin: 0 auto 30px;
     opacity: 0.8;
+}
+.register-submit{
+    width: 30%;
 }
 .submit:hover {
     opacity: 1;
@@ -70,8 +74,8 @@ body{
     width: 600px;
     height: 400px;
 }
-#files{
-    margin-bottom: 10px;
+.imageLoad{
+    margin: 0 auto 100px;
 }
 .photo{
     display: block;
@@ -80,4 +84,76 @@ body{
 }
 .none{
     display: none;
+}
+.register-form{
+    display: flex;
+    flex-direction: column;
+    margin: 200px auto;
+}
+.box{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 70px;
+}
+.js .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.inputfile + label {
+    max-width: 80%;
+    font-size: 1.25rem;
+    /* 20px */
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+    /* 10px 20px */
+}
+
+.no-js .inputfile + label {
+    display: none;
+}
+
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+.inputfile + label * {
+    /* pointer-events: none; */
+    /* in case of FastClick lib use */
+}
+
+.inputfile + label svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+    margin-top: -0.25em;
+    /* 4px */
+    margin-right: 0.25em;
+    /* 4px */
+}
+
+
+/* style 1 */
+
+.inputfile-1 + label {
+    color: #f1e5e6;
+    background-color: #d3394c;
+}
+
+.inputfile-1:focus + label,
+.inputfile-1.has-focus + label,
+.inputfile-1 + label:hover {
+    background-color: #722040;
 }
