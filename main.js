@@ -99,16 +99,18 @@ function handleFormSubmit(e) {
 
 function createElements(data) {
   const messageContainer = document.createElement("div");
-  const chatMessage = document.createElement("div");
-  const userName = document.createElement("div");
+  const messageBubble = document.createElement('div');
+  const chatMessage = document.createElement("p");
+  const msgInfo = document.createElement('div');
+  const userName = document.createElement("p");
   const time = document.createElement("p");
   const photo = document.createElement("img");
   photo.src = data.image;
   handleImageLoad();
   createTime(time);
-  contentAddind(userName, chatMessage, data);
-  classAdding(messageContainer, chatMessage, userName, time, photo);
-  addElements(chatMessage, time, messageContainer, userName, photo);
+  contentAddind(userName, chatMessage, data, messageContainer);
+  classAdding(messageContainer, chatMessage, userName, time, photo, messageBubble, msgInfo);
+  addElements(chatMessage, time, messageContainer, userName, photo, messageBubble, msgInfo);
 }
 
 function createTime(time) {
@@ -119,21 +121,28 @@ function createTime(time) {
   time.textContent = `${h}:${m}:${s}`;
 }
 
-function classAdding(messageContainer, chatMessage, userName, time, img) {
-  messageContainer.classList.add("message-container");
-  chatMessage.classList.add("chat-message");
-  userName.classList.add("name-of-user");
-  time.classList.add("time");
-  img.classList.add("photo");
+function classAdding(messageContainer, chatMessage, userName, time, img, messageBubble, msgInfo) {
+  messageContainer.classList.add("msg");
+  messageBubble.classList.add('msg-bubble');
+  msgInfo.classList.add('msg-info');
+  chatMessage.classList.add('msg-text');
+  userName.classList.add("msg-info-name");
+  time.classList.add("msg-info-time");
+  img.classList.add("msg-img");
 }
 
-function contentAddind(userName, chatMessage, data) {
+function contentAddind(userName, chatMessage, data, messageContainer) {
   userName.textContent = `${data.name}:`;
   chatMessage.textContent = data.message;
+  if(JSON.parse(localStorage.getItem('settings')).name === `${data.name}`){
+    messageContainer.classList.add('right-msg');
+  }
 }
 
-function addElements(chatMessage, time, messageContainer, userName, img) {
-  messageContainer.append(userName, chatMessage, time, img);
+function addElements(chatMessage, time, messageContainer, userName, img, messageBubble, msgInfo) {
+  msgInfo.append(userName, time)
+  messageBubble.append(msgInfo, chatMessage);
+  messageContainer.append(img, messageBubble);
   chatContainer.append(messageContainer);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
